@@ -867,8 +867,15 @@ def solvate_topology(
 
     # Neutralise the system by adding and removing salt
     solute_charge = sum([molecule.total_charge for molecule in topology.molecules])
+    #from openff.units import Quantity
+    #extracharge = Quantity(-2,'elementary_charge')
+    #solute_charge = solute_charge + extracharge 
     na_to_add = np.ceil(nacl_to_add - solute_charge.m / 2.0)
-    cl_to_add = np.floor(nacl_to_add + solute_charge.m / 2.0)
+    #print("Solute Charge",solute_charge.m)
+    #print("Na to add",na_to_add)
+    #cl_to_add = np.floor(nacl_to_add + solute_charge.m / 2.0)
+    cl_to_add = np.ceil(nacl_to_add + solute_charge.m / 2.0)
+    #print("Cl to add",cl_to_add)
 
     # Pack the box
     return pack_box(
@@ -877,4 +884,4 @@ def solvate_topology(
         solute=topology,
         tolerance=2.0 * unit.angstrom,
         box_vectors=box_vectors,
-    )
+    ),int(water_to_add), int(na_to_add), int(cl_to_add)
